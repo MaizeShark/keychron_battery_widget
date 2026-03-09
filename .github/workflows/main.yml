@@ -11,28 +11,22 @@ jobs:
     runs-on: ubuntu-22.04
     
     steps:
-    - uses: actions/checkout@v2
-    # - name: Install Qt
-    #   uses: jurplel/install-qt-action@v4
-    #   with:
-    #     version: 6.8.3
+    - uses: actions/checkout@v4
 
-    - name: list
+    - name: List workspace
       working-directory: ${{github.workspace}}
       run : ls
 
-    - name: install python PyQt6
+    - name: Install PyQt6
       working-directory: ${{github.workspace}}
       run : python3 -m pip install --prefix=/usr --root=AppDir PyQt6
 
-    - name: install python PyQt6
+    - name: Install hid
       working-directory: ${{github.workspace}}
       run : python3 -m pip install --prefix=/usr --root=AppDir hid
 
     - name: Build AppImage
       uses: AppImageCrafters/build-appimage-action@master
-      env:
-        UPDATE_INFO: gh-releases-zsync|cgspeck|brewtarget|latest|*x86_64.AppImage.zsync
       with:
         recipe: build-scripts/AppImageBuilder.yml     
     

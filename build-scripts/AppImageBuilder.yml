@@ -8,7 +8,7 @@ script:
   - mkdir -p AppDir/usr/share/icons/hicolor/256x256/apps
   # Copy the python application code into the AppDir
   - cp -a ./src AppDir/usr -r
-  - cp widget_logo.png AppDir/usr/share/icons/hicolor/256x256/apps -r
+  - cp ./src/icons/widget_logo.png AppDir/usr/share/icons/hicolor/256x256/apps -r
   - apt-get update && apt-get install -y --no-install-recommends squashfs-tools python3
   
   
@@ -24,7 +24,6 @@ AppDir:
 
   apt:
     arch: amd64
-    sources:
     allow_unauthenticated: true
     sources:
       - sourceline: deb http://mx.archive.ubuntu.com/ubuntu/ jammy main restricted universe multiverse

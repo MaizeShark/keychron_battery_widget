@@ -1,4 +1,5 @@
 import hid
+import signal
 import sys
 import os
 from PyQt6.QtCore import QTimer,Qt
@@ -8,7 +9,7 @@ from PyQt6.QtWidgets import (QApplication
                              )
 from PyQt6.QtGui import QAction,QIcon
 
-path_to_main = os.path.dirname(os.path.realpath(__file__))
+path_to_icons = os.path.dirname(os.path.realpath(__file__)) + '/icons'
 
 def get_path_to_remote_interface():
     devices = hid.enumerate(vid=0x3434, pid=0xd028)
@@ -21,7 +22,7 @@ class MainWindow(QSystemTrayIcon):
     def __init__(self,appin):
         super().__init__(appin)
 
-        self.set_icons_scheme(app.styleHints().colorScheme())
+        self.set_icons_scheme(appin.styleHints().colorScheme())
 
 
         self.menu = QMenu()
@@ -42,23 +43,23 @@ class MainWindow(QSystemTrayIcon):
     def set_icons_scheme(self,scheme_color:Qt.ColorScheme):
         print(scheme_color)
         if scheme_color == Qt.ColorScheme.Light:
-            self.icon0 = QIcon(path_to_main + '/battery0.png')
-            self.icon1 = QIcon(path_to_main + '/battery1.png')
-            self.icon2 = QIcon(path_to_main + '/battery2.png')
-            self.icon3 = QIcon(path_to_main + '/battery3.png')
-            self.icon4 = QIcon(path_to_main + '/battery4.png')
-            self.icon5 = QIcon(path_to_main + '/battery5.png')
-            self.icon_wired = QIcon(path_to_main + '/usbicon.png')
-            self.charging = QIcon(path_to_main + '/charging_bolt.png')    
+            self.icon0 = QIcon(path_to_icons + '/battery0.png')
+            self.icon1 = QIcon(path_to_icons + '/battery1.png')
+            self.icon2 = QIcon(path_to_icons + '/battery2.png')
+            self.icon3 = QIcon(path_to_icons + '/battery3.png')
+            self.icon4 = QIcon(path_to_icons + '/battery4.png')
+            self.icon5 = QIcon(path_to_icons + '/battery5.png')
+            self.icon_wired = QIcon(path_to_icons + '/usbicon.png')
+            self.charging = QIcon(path_to_icons + '/charging_bolt.png')    
         else:
-            self.icon0 = QIcon(path_to_main + '/battery0White.png')
-            self.icon1 = QIcon(path_to_main + '/battery1White.png')
-            self.icon2 = QIcon(path_to_main + '/battery2White.png')
-            self.icon3 = QIcon(path_to_main + '/battery3White.png')
-            self.icon4 = QIcon(path_to_main + '/battery4White.png')
-            self.icon5 = QIcon(path_to_main + '/battery5White.png')
-            self.icon_wired = QIcon(path_to_main + '/usbiconWhite.png')   
-            self.charging = QIcon(path_to_main + '/charging_boltWhite.png')                 
+            self.icon0 = QIcon(path_to_icons + '/battery0White.png')
+            self.icon1 = QIcon(path_to_icons + '/battery1White.png')
+            self.icon2 = QIcon(path_to_icons + '/battery2White.png')
+            self.icon3 = QIcon(path_to_icons + '/battery3White.png')
+            self.icon4 = QIcon(path_to_icons + '/battery4White.png')
+            self.icon5 = QIcon(path_to_icons + '/battery5White.png')
+            self.icon_wired = QIcon(path_to_icons + '/usbiconWhite.png')   
+            self.charging = QIcon(path_to_icons + '/charging_boltWhite.png')                 
             
         self.update_status()
 
@@ -102,6 +103,7 @@ class MainWindow(QSystemTrayIcon):
                 self.setIcon(self.icon_wired)
             else:
                 self.setToolTip('Device couldnt be detected')
+                self.setIcon(self.icon0)
             self.battery_level = None
 
     def update_status(self):
@@ -112,12 +114,17 @@ class MainWindow(QSystemTrayIcon):
             
 
 
-app = QApplication(sys.argv)
+def main():
+    signal.signal(signal.SIGINT, signal.SIG_DFL)
+    app = QApplication(sys.argv)
+    w = MainWindow(app)
+    app.styleHints().colorSchemeChanged.connect(w.set_icons_scheme)
+    w.show()
+    app.exec()
 
-w = MainWindow(app)
-
-app.styleHints().colorSchemeChanged.connect(w.set_icons_scheme)
-
-w.show()
-
-app.exec()
+if __name__ == '__main__':
+    try:
+        main()
+    except KeyboardInterrupt:
+        print('Interrupted')
+        sys.exit(0)

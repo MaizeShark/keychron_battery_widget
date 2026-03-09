@@ -1,22 +1,21 @@
-# Keychron battery widget
+# Keychron Battery Widget
 
-### this is small widget to display battery state of keychron M5 in wireless 2,4GHz mode
+A small widget to display the battery state of the Keychron M5 in wireless 2.4GHz mode.
+
 currently supported devices:
-- keychron M5
+- Keychron M5 (3434:d028)
 
-### should work on any desktop which supports system tray
+> Should work on any desktop which supports system tray.
 
-### provided by default for linux via appimage, should work on windows but will require manual compile to exe
+Provided by default for Linux via AppImage, should work on Windows but will require manual compilation to an exe.
 
 ---------------------
-if you'd like for your keychron mouse/keyboard to be supported then open an issue following bellow instruction
+If you'd like for your Keychron Mouse/Keyboard to be supported, open an issue following the instructions below:
 
-1. run lsusb find your device and copy it's ID, also note bus number and device number
-1. install wireshark
-1. run modprobe usbmon and then run wireshark in elevated privilages via sudo
-1. start monitoring usb0 in wireshark, to acctually see what's going on use filter usb.dst ~ "<bus number>.<device number>" or usb.src ~ "<bus number>.<device number>" replace numbers with outputs from lsusb
-1. open keychron app, find an event in wireshark which has report in the event name, screenshot it and copy its byte representation
-1. open keychron app once more with different battery level.
-1. run modprobe -r usbmon to disable usb monitoring
-
-
+1. Run ``lsusb``, find your device and copy its ID, also note the bus number and device number
+2. Install Wireshark
+3. Run ``sudo modprobe usbmon`` and then run ``sudo -E wireshark`` in elevated privilages via sudo
+4. Start monitoring the interface matching your device's bus number in Wireshark (e.g. bus 1 → ``usbmon0`` / ``usb0``, bus 2 → ``usbmon1`` / ``usb1``). To actually see what's going on, use the filter ``usb.dst ~ "<bus number>.<device number>"`` or ``usb.src ~ "<bus number>.<device number>"``, replacing the numbers with the outputs from lsusb.
+5. Open the Keychron App, find an event in Wireshark that has "report" in the event name, screenshot it and copy its byte representation.
+6. Open Keychron App once more with a different battery level.
+7. Run ``sudo modprobe -r usbmon`` to disable USB monitoring
